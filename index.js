@@ -26,6 +26,9 @@ app.use(cors({
 }));
 
 const spotifyRequest = params => {
+    //params object
+    console.log("spotifyRequestParams: ",params)
+    
     return new Promise((resolve, reject) => {
         request.post(API_URL, {
           form: params,
@@ -37,6 +40,10 @@ const spotifyRequest = params => {
       })
       .then(resp => {
         if (resp.statusCode != 200) {
+          
+          //response 
+          console.log(resp)
+          
           return Promise.reject({
             statusCode: resp.statusCode,
             body: resp.body
@@ -45,6 +52,10 @@ const spotifyRequest = params => {
         return Promise.resolve(resp.body);
       })
       .catch(err => {
+       
+        //catch error
+        console.log( "error caught : " , err)
+       
         return Promise.reject({
           statusCode: 500,
           body: JSON.stringify({})
@@ -53,14 +64,18 @@ const spotifyRequest = params => {
   };
   
   app.post('/exchange', (req, res) => {
- 
+    
+    //start of initial token request
+    console.log("request body: ", req.body)
+
     const params = req.body;
     if (!params.code) {
       return res.json({
         "error": "Parameter missing"
       });
     }
-   
+    //making request to spotify login
+    console.log("request to spotify: ", params.code)
     spotifyRequest({
         grant_type: "authorization_code",
         redirect_uri: CLIENT_CALLBACK_URL,
@@ -87,12 +102,13 @@ const spotifyRequest = params => {
         "error": "Parameter missing"
       });
     }
-   
+    console.log("access token expires should auto get refesh: ", params)
     spotifyRequest({
         grant_type: "refresh_token",
         refresh_token: decrypt(params.refresh_token)
       })
       .then(session => {
+        console.log("refeshed session: ", session)
         return res.send({
             "access_token": session.access_token,
             "expires_in": session.expires_in
