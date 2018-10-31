@@ -85,7 +85,7 @@ const spotifyRequest = params => {
         let result = {
           "access_token": session.access_token,
           "expires_in": session.expires_in,
-          "refresh_token": encrypt(session.refresh_token)
+          "refresh_token": session.refresh_token
         };
         return res.send(result);
       })
@@ -105,7 +105,7 @@ const spotifyRequest = params => {
     console.log("access token expires should auto get refesh: ", params)
     spotifyRequest({
         grant_type: "refresh_token",
-        refresh_token: decrypt(params.refresh_token)
+        refresh_token: params.refresh_token
       })
       .then(session => {
         console.log("refeshed session: ", session)
