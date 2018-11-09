@@ -3,7 +3,7 @@ var cors = require("cors"),
   express = require("express"),
   dotenv = require("dotenv"),
   bodyParser = require("body-parser"),
-  request = require("request"),
+  request = require("request");
 
 var app = express();
 dotenv.load();
